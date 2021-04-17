@@ -1,13 +1,17 @@
-﻿using DeveloperTest.Models;
+﻿using DeveloperTest.Database.Models;
+using DeveloperTest.Helpers;
+using DeveloperTest.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DeveloperTest.Business.Interfaces
 {
     public interface IJobService
     {
-        JobModel[] GetJobs();
+        Task<APIResponse> GetJobs();
 
-        JobModel GetJob(int jobId);
+        Task<APIResponse> GetJob(int jobId);
 
-        JobModel CreateJob(BaseJobModel model);
+        Task<APIResponse> CreateJob(BaseJobModel model);
     }
 }

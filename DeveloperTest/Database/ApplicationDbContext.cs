@@ -1,16 +1,18 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using DeveloperTest.Database.Models;
+using DeveloperTest.Models;
 
 namespace DeveloperTest.Database
 {
     public class ApplicationDbContext : DbContext
     {
         public DbSet<Job> Jobs { get; set; }
+        public DbSet<Customer> Customers { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
-
+            this.Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

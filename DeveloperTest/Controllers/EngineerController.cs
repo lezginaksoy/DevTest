@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using DeveloperTest.Business.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -7,19 +9,18 @@ namespace DeveloperTest.Controllers
     [ApiController, Route("[controller]")]
     public class EngineerController : ControllerBase
     {
-        private static readonly string[] Engineers = { "Ashley", "Dave", "Kalina" };
-
-        private readonly ILogger<EngineerController> _logger;
-
-        public EngineerController(ILogger<EngineerController> logger)
+  
+        private readonly IEngineerService  _engineerService;
+        public EngineerController(IEngineerService engineerService)
         {
-            _logger = logger;
+            _engineerService = engineerService;
         }
 
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<IActionResult> Get()
         {
-            return Engineers;
+            var engineer= await _engineerService.GetEngineers();
+            return Ok(engineer);
         }
     }
 }

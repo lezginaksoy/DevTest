@@ -7,6 +7,7 @@ using Microsoft.Extensions.Hosting;
 using DeveloperTest.Business;
 using DeveloperTest.Business.Interfaces;
 using DeveloperTest.Database;
+using DeveloperTest.Database.Interfaces;
 
 namespace DeveloperTest
 {
@@ -27,7 +28,11 @@ namespace DeveloperTest
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddTransient<IJobService, JobService>();
+            services.AddScoped<IRepository, Repository>();
+            services.AddScoped<ICustomerService, CustomerService>();
+            services.AddScoped<IJobService, JobService>();
+            services.AddScoped<IEngineerService, EngineerService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

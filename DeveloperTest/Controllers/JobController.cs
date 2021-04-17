@@ -2,49 +2,50 @@
 using Microsoft.AspNetCore.Mvc;
 using DeveloperTest.Business.Interfaces;
 using DeveloperTest.Models;
+using System.Threading.Tasks;
+using DeveloperTest.Helpers;
 
 namespace DeveloperTest.Controllers
 {
-    [ApiController, Route("[controller]")]
-    public class JobController : ControllerBase
+    [ApiController]
+    [Route("[controller]")]
+    public class JobController : BaseAPIController
     {
-        private readonly IJobService jobService;
+        private readonly IJobService _jobService;
 
         public JobController(IJobService jobService)
         {
-            this.jobService = jobService;
+            this._jobService = jobService;
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            return Ok(jobService.GetJobs());
+            var jobList = await _jobService.GetJobs();
+            if (jobList.Code != (int)Errors.Success)
+                return Error(jobList.ErrorEnum);
+
+            return Ok(jobList);
         }
 
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            var job = jobService.GetJob(id);
-
-            if (job == null)
-            {
-                return NotFound();
-            }
+            var job = await _jobService.GetJob(id);
+            if (job.Code != (int)Errors.Success)
+                return Error(job.ErrorEnum);
 
             return Ok(job);
         }
 
         [HttpPost]
-        public IActionResult Create(BaseJobModel model)
+        public async Task<IActionResult> Create(BaseJobModel model)
         {
-            if (model.When.Date < DateTime.Now.Date)
-            {
-                return BadRequest("Date cannot be in the past");
-            }
+            var newJob = await _jobService.CreateJob(model);
+            if (newJob.Code != (int)Errors.Success)
+                return Error(newJob.ErrorEnum);
 
-            var job = jobService.CreateJob(model);
-
-            return Created($"job/{job.JobId}", job);
+            return Ok(newJob);
         }
     }
 }
